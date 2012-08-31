@@ -52,7 +52,7 @@ $(document).bind('pageinit', function(){
  //Uses default lib to create the connection
  $('#rating, #notes').defaultValue();
 
- $("#need").attr ("checked", "checked").checkboxradio ("refresh");
+ //$("#need").attr ("checked", "checked").checkboxradio ("refresh");
  
  //sets default date
   var now = new Date();

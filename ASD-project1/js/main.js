@@ -12,51 +12,44 @@ window.addEventListener("DOMContentLoaded", function(){
     window.scrollTo(1, 0);
     }, false);
 	
-     //getElementById function
-     function ge(x){
-           var theElement = document.getElementById(x);          //Pass in name for getting tag name by Id
-           return theElement;								     //Returns the element
-     }
+     
+    var Main = {
      
      
      //Create select field element and populate with options
-     function makeComics(){
-         var     formTag = document.getElementsByTagName("form"), //formTag is an array of all the form tags
-		         getSelect = ge('groups');                        //assignment for select element
-         if(getSelect){
-	         for(var i=0, j=comicGroups.length; i<j; i++){  		  //itterate over the options for the comicgroups variable
-	             var makeOption = document.createElement('option');   //adds the option if item is found in the array
-	             var optText = comicGroups[i];						  //Adds the item in the array
-	             makeOption.setAttribute("value", optText);			  //value for the option item
-	             makeOption.innerHTML = optText;					  //makes inner html
-	             getSelect.appendChild(makeOption);				  //appends to the child element
-	         }
-	     }
+     makeComics : function(){
+	      
+	      $.each(comicGroups, function(key, value) {
+		    $('#groups').append($("<option/>", {
+		        value: key,
+		        text: value
+		    }));
+          });
          
-      }
+      },
      
      //Find value of selected radio button
-     function getSelectedRadio(){			
+     getSelectedRadio : function(){			
          var radios = document.forms[0].haveit;					  //initialized the form to the radios
          for(var i=0; i<radios.length; i++){					  //loops the form radio set called haveit
             if(radios[i].checked){                                //checks to see which value is checked
                haveitValue = radios[i].value;
             }
           }
-     }
+     },
 	 
      //Find value of the check box
-     function getCheckboxValue(){								  
-       if(ge('need').checked){                                     //sees if the need check box is checked
-          needValue = ge('need').value;
+     getCheckboxValue : function(){								  
+       if($('#need').is(':checked')){                                     //sees if the need check box is checked
+          needValue = $('#need').val();
        }else{
-           needValue = "No";                                      //if the checkbox is not checked then it will set to value of No
+           needValue = "No";                                           //if the checkbox is not checked then it will set to value of No
        }
-     }
-    
+     },
+     
      
      //Save data into local storage
-     function storeData(key){       
+     storeData : function (key){       
           //If there is no key, this means this is a brand new item and we need a new key.
 	      if(!key){			  
               var id             = Math.floor(Math.random()*10000001);
@@ -71,144 +64,97 @@ window.addEventListener("DOMContentLoaded", function(){
           getSelectedRadio();													//Checks the selected radio button
           getCheckboxValue();													//Checks the checkbox value
           var item               = {};											//Items object created
-              item.publisher     = ["Publisher:",ge('groups').value];			//Property for publisher created
-              item.cname         = ["Comic Name:",ge('cname').value];			//Property for comic name created
-              item.iname         = ["Issue:",ge('iname').value];					//Property for issue created
-              item.email         = ["Email:",ge('email').value];                 //Property for email created
+              item.publisher     = ["Publisher:",$('#groups').val() ];			//Property for publisher created
+              item.cname         = ["Comic Name:",$('#cname').val() ];			//Property for comic name created
+              item.iname         = ["Issue:",$('#iname').val() ];					//Property for issue created
+              item.email         = ["Email:",$('#email').val() ];                 //Property for email created
               item.haveit        = ["Have it?:",haveitValue];                   //Property for Have it created
               item.need          = ["Needs appraisal:",needValue];              //Property for needs appraisal created
-              item.rating        = ["Rating:",ge('rating').value];               //Property for creating rating is created
-              item.date          = ["Date:",ge('date').value];					//Property for data is created
-              item.notes         = ["Notes:",ge('notes').value];		            //Property for notes is created
+              item.rating        = ["Rating:",$('#rating').val() ];               //Property for creating rating is created
+              item.date          = ["Date:",$('#date').val() ];					//Property for data is created
+              item.notes         = ["Notes:",$('#notes').val() ];		            //Property for notes is created
               
               
           //Save all the data into local storage Use Stringify to convert our object to a string.          
           localStorage.setItem(id, JSON.stringify(item));    					//Stores the item locally with stringfy as string
 		  console.log("This is an id: " +id);               					//Showing the id creation
           alert("Comic Saved");													//Tells the Comic is saved
-      }
+      },
        
       
 	  
 	  //Function to get the data stored local storage for JQM
-      function getJQData(){
+      getJQData : function (){
 			
          if(localStorage.length === 0){											//Checks to see if items are in local storage
-		   autoFillData(); 							                            //alert prompt there is no data found
+		   Main.autoFillData(); 							                            //alert prompt there is no data found
          }
          //Write Data from Local Storage to the browser.
-         var makeDiv = document.createElement('div');							//creates a div tag 
-         makeDiv.setAttribute("id", "items");									//sets attributes for new div tag id called items
-         var makeList = document.createElement('ul');							//creates ul tag
-         makeDiv.appendChild(makeList);											//appends ul to div tag
-         document.body.appendChild(makeDiv);									//appends div tag with its child to body tag
-         ge('items').style.display = "block";									//sets style for items to display
+         $("body").append('<div id="items"> <ul>');									//appends div tag with its child to body tag
+         $('#items').css({ display: "block" });                                 //sets style for items to display
          for(var i=0, len=localStorage.length; i<len; i++){						//itterate the local storage
-             var makeli = document.createElement('li');							//makes li tag
-             makeli.setAttribute("class","drop-shadow curled");
-             var linksLi = document.createElement('li');					    //makes li tag for links edit-delete
-             makeList.appendChild(makeli);										//appends li to ul
+             $('<li class="drop-shadow curled">');							
+             $('<li>');					                                        //makes li tag for links edit-delete
              var key = localStorage.key(i); 									//key for localstorage objects
              var value = localStorage.getItem(key);								//value of the object by key
+             
              //Convert the string from local storage value back to an object by using JSON.parse()
              var obj = JSON.parse(value);										//Json parsing of object
-             var makeSubList = document.createElement('ul');				    //creates the sublist ul element
-             makeli.appendChild(makeSubList);									//appends to li ul element
-			 getImage(obj.publisher[1], makeSubList);								//adds image for identification
+             $('<ul>');	
+             $('<li>').append($('<img>').attr("src","images/"+ obj.publisher[1] + ".png"));
              for(var n in obj){													//itterates the item in the object
-                var makeSubli = document.createElement('li');					//creates element li 
-                makeSubList.appendChild(makeSubli);								//appends to sublist li
-                var optSubText = obj[n][0]+" "+obj[n][1];						//gets the text in the object
-                makeSubli.innerHTML = optSubText;								//adds the innerHtml element for the text
-                makeSubList.appendChild(linksLi);
+                $('<li>').append(obj[n][0]+" "+obj[n][1]);														//creates element li        
              }
-              makeItemLinks(localStorage.key(i), linksLi);                      //Create our edit and delete buttons/link for 
-			  var addHl = document.createElement('hr');							//adds a horizontal rule seperator for look
-			  addHl.setAttribute("id","genlist");								//adds id attribute for css to add styles
-		      makeSubList.appendChild(addHl);									//appends the element to the end of the ul set
+             var param = localStorage.key(i);
+             //add Edit single item link
+             $('<a>').attr('href', '#additem').text('Edit').attr('rel', 'external').attr('class','sublinks').bind('tap', param, Main.editItem).append($('<br>'));
+             
+             //add delete single item link
+             $('<a>').attr('href', 'additem.html').text('Delete').attr('rel', 'external').attr('class','sublinks force-reload').bind('tap',param, Main.editItem).append($('<br>'));
+             
+             $('<hr>').attr('id','genlist');							     	//adds id attribute for css to add styles
          }
+
+      $('#jDataLoad').append($('#items'));  //Appends child to id
       
-      var getLister = ge('items');
-      var putHere = ge('jDataLoad');
-      putHere.appendChild(getLister);
-      
-      }
+      },
       
       
       //This is for the clear Filer button on the search page
-      function clearFilter(){
+      clearFilter : function (){
          $('input[data-type="search"]').val("");
          $('input[data-type="search"]').trigger("keyup");
-      }
-
-	  //New Get the image for the right category
-
-	  function getImage(catName, makeSubList){
-		  var imageLi = document.createElement('li');
-		  makeSubList.appendChild(imageLi);
-		  var newImg = document.createElement('img');
-		  var setSrc = newImg.setAttribute("src", "images/"+ catName + ".png");
-		  imageLi.appendChild(newImg);
-	  }
-
+      },
 	  
 
 	  //Auto Populate Local Storage
-	  function autoFillData(){
+	  autoFillData : function (){
 		  //The actual JSON Object data required for this to work is coming from our json.js file
 		  //Store the JSON Object into Local Storage
 		  for(var n in json){
 			  var id  = Math.floor(Math.random()*10000001);
 			  localStorage.setItem(id, JSON.stringify(json[n]));
 		  }
-	  }
+	  },
       
-      //Create the edit and delete links for each stored item when displayed
-	  function makeItemLinks(key, linksLi){
-		  //add edit single item link
-		  var editLink = document.createElement('a');							//Creates anchor tag
-		  editLink.href = "#additem";													//sets the value to pound tag
-		  editLink.rel = "external";
-		  editLink.key = key;													//gets the key for the item being edited
-		  var editText = "Edit";									        	//Creates text of Edit comic	
-		  editLink.addEventListener("click", editItem);							//Adds the event listener for the edit item link
-		  editLink.setAttribute("class","sublinks");                            //Adds class sublinks for css
-		  editLink.innerHTML = editText;										//adds the link to the html
-		  linksLi.appendChild(editLink);										//by appending the edit link
-		  
-		  //add line break
-		  var breakTag = document.createElement('br');							//Adds a break to create the element spacing
-		  linksLi.appendChild(breakTag);										//Appends the break tag
-		  
-		  //add delete single item link
-		  var deleteLink = document.createElement('a');							//adds an anchor tag for the delete link
-		  deleteLink.href = "additem.html";										//adds the link value to pound going same page
-		  deleteLink.rel ="external";
-		  deleteLink.key = key;													//sets the key to the comic being deleted
-		  var deleteText = "Delete";										    //creates the text to delete the comic
-		  deleteLink.addEventListener("click", deleteItem);						//adds the event listener to delete the item
-		  deleteLink.setAttribute("class","sublinks force-reload");
-		  deleteLink.innerHTML = deleteText;									//adds the link to the html
-		  linksLi.appendChild(deleteLink);										//appends the deletelink child 
-	  }
-	  
-	  
+      	  
 	  // Edits an Item from the list 
-	  function editItem(){
+	  editItem : function (){
 	         console.log("editing items");
 		  //Grab the data from our item from Local Storage
 		  var value = localStorage.getItem(this.key);							//gets the item the selected key item from localStorage
 		  var item = JSON.parse(value);											//parses the retrieved value
-		  
-		  //Show the form
-		 // toggleControls("off");												//shows the form
-		  if (ge('groups') != null){
+
+		  if ($('#groups') != null){
 		    
 			  //populate the form fields with current localStorage values.
-			  ge('groups').value = item.publisher[1];								//gets the stored key value of publisher
-			  ge('cname').value = item.cname[1];								    //gets the stored key value of the comic name
-			  ge('iname').value = item.iname[1];								    //gets the stored key value element of issue
-			  ge('email').value = item.email[1];									//gets the stored key value element of email 
+			  
+			     //Populate the form fields with the current localStorage values.
+			     
+			  $('#groups').val(item.publisher[1]);								//gets the stored key value of publisher
+			  $('#cname').val(item.cname[1]);								    //gets the stored key value of the comic name
+			  $('#iname').val(item.iname[1]);								    //gets the stored key value element of issue
+			  $('#email').val(item.email[1]);									//gets the stored key value element of email 
 			  var radios = document.forms[0].haveit;								//checks the value of the radio stored button value		  		  
 			  for(var i=0; i<radios.length; i++){									//itterate the radio set
 				  if(radios[i].value == "Yes" && item.haveit[1] == "Yes"){			//checking which values should be set
@@ -219,20 +165,19 @@ window.addEventListener("DOMContentLoaded", function(){
 			  }
 			  console.log("need "+item.need[1]);
 			  if(item.need[1] == "Yes"){											//reviews the checkbox to see if it should be checked
-				  ge('need').setAttribute("checked", "checked");
-				  //ge('need').setAttribute("class", "ui-icon-checkbox-on");
+				  $('#need').setAttribute("checked", "checked");
 			  }
-			  ge('rating').value = item.rating[1];									//calls the rating value by key
+			  $('#rating').val(item.rating[1]);							     		//calls the rating value by key
 			  document.forms[0].rating.value = item.rating[1];                      //sets the visible rating 
-			  ge('date').value = item.date[1];										//gets the date value by key
-			  ge('notes').value = item.notes[1];										//gets the stored notes value by key
+			  $('#date').val(item.date[1]);								     		//gets the date value by key
+			  $('#notes').val(item.notes[1]);								    //gets the stored notes value by key
 			  
 			  //Remove the intial listener from the input 'save comic' button.
 			  save.removeEventListener("click", storeData);
 			  
 			  //change Submit Button value to Edit Button
-			  ge('submit').value = "Edit Comic";
-			  var editSubmit = ge('submit');
+			  $('#submit').val() = "Edit Comic";
+			  var editSubmit = $('#submit');
 			  //Save the key value established in this function as a property of the editSubmit event
 			  //so we can use that value when we save the data we edited
 			  editSubmit.addEventListener("click", validate);						//sets the validate listener to the edit submit
@@ -240,10 +185,10 @@ window.addEventListener("DOMContentLoaded", function(){
 		  }else{
 		    $('#loadarea').load('rel="additem.html" #additem');
 		  }										//sets to key to the selected key edited
-	  }
+	  },
 	  
 	  //Deletes an item from the list
-	  function deleteItem(){
+	  deleteItem : function (){
 		  var ask = confirm("Are you sure you want to delete this comic?");	    //confirmation to delete the comic
 		  if(ask){																//if yes its ok to delete
 			  localStorage.removeItem(this.key);								//removed the key from local storage
@@ -252,10 +197,10 @@ window.addEventListener("DOMContentLoaded", function(){
 		  }else{
 			  alert("Comic was NOT deleted.");								    //Otherwise the comic was not deleted
 		  }
-	  }																		    //each item in local storage
+	  },																		    //each item in local storage
       
       //Clear all data
-      function clearLocal()  {
+      clearLocal : function ()  {
            if(localStorage.length === 0){										//Checks the lenghth of the localStorage
                 alert("There is no data to clear.");							//Alert no data to clear
            }else{
@@ -264,16 +209,16 @@ window.addEventListener("DOMContentLoaded", function(){
                window.location.reload();										//reload of the window
                return false;													//returns false
            }
-       }
+       },
          
  
-      function validate(e){														//Validates the input fields
+      validate : function (e){														//Validates the input fields
 		 //Define the elements we want to check 
-		 var getGroup = ge('groups');											//variable of the group of comic names was choosen
-		 var getCname = ge('cname');											//variable a name was put in for the comic name
-		 var getIname = ge('iname');											//variable to see if an issue number was put in
-		 var getEmail = ge('email');											//variable set to field email
-		 var getGroupErr = ge('err');
+		 var getGroup = $('#groups');											//variable of the group of comic names was choosen
+		 var getCname = $('#cname');											//variable a name was put in for the comic name
+		 var getIname = $('#iname');											//variable to see if an issue number was put in
+		 var getEmail = $('#email');											//variable set to field email
+		 var getGroupErr = $('#err');
 		 
 		 //Reset Error Message
 		 errMsg.innerHTML = "";
@@ -329,39 +274,27 @@ window.addEventListener("DOMContentLoaded", function(){
 			 storeData(this.key);
 		 }
 	 }
+	};
      
      //variable defaults
      var comicGroups = ["DC","Marvel","Image","Dark Horse"],   //List of comics to be passed in for the select
          haveitValue,																	   //Holding value for if we have it
          needValue = "No"  																   //default needs appraisal value
-         errMsg = ge('errors');
+         errMsg = $('#errors');
      ;         
-     makeComics();															               //calls the function for making the comics list
+     Main.makeComics();															               //calls the function for making the comics list
      
      
      //Set Link & Submit Click Events
      
     
-     var clearit = ge('clearit');											 //adds listener for clear button on search area
-     if(clearit){
-        clearit.addEventListener("click", clearFilter);
-     }
-     var dataLoader = ge('dataLoader');
-     if(dataLoader){								  	                    //gets the tag id called dataLoader
-        dataLoader.addEventListener("click", getJQData);					    //adds the eventlistener fo click to the getJQData function  
-     }
-      var browseDisplayLink = ge('browseDisplayLink');
-     if(browseDisplayLink){        								                 //gets the tag id called displayLink
-        browseDisplayLink.addEventListener("click", getJQData);					     //adds the eventlistener fo click to the displayLink to getData function
-     }
-     var clearLink =ge('clear');
-     if(clearLink){											                // gets the tag id called clear 
-        clearLink.addEventListener("click", clearLocal);					//assigns an event listener of click to clearLocal data function for id tag clear
-     }
-     var save = ge('submit');											    //gets the tag id called submit
-     if(save){
-        save.addEventListener("click", validate);								//adds the eventlistener of click to call validate before storeData
-     }
+     											
+     $('#clearit').bind('click', Main.clearFilter);
+     $('#dataLoader').bind('click', Main.getJQData);
+     $('#browseDisplayLink').bind('click', Main.getJQData);
+     $('#clear').bind('click', Main.clearLocal);
+     $('#submit').bind('click', Main.validate);										     //gets the tag id called submit
+    
      
      
 
