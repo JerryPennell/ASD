@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	//console.log('I am ready');
 	$.ajax({
-		"url": 'asdproject/_alldocs?include_docstrue&start_key"comics:"&end_key="comics:zzzzz"',
+		"url": 'asdproject/_all_docs?include_docstrue&start_key="comics:"&end_key="comics:zzzzz"',
 		"dataType": "json",
 		"success": function(data){
 			console.log(data);
