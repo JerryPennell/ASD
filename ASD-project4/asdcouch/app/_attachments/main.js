@@ -75,7 +75,7 @@ var comix = {};
     comix.Comics = Backbone.Collection.extend({
         model: comix.Comic,
         _db: db,
-        url : '/comic',
+        url : '/comics',
         comparator: function(comic){
             var date = new Date(comic.get('date'));
             return date.getTime();

@@ -14,7 +14,7 @@ Backbone.couch_connector = con = {
   config: {
     db_name: "asdproject",
     ddoc_name: "asd",
-    view_name: "comic",
+    view_name: "comics",
     list_name: null,
     global_changes: false,
     base_url: null
