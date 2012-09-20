@@ -8,9 +8,9 @@ Backbone framework
 
 var comix = {};
 
-//Backbone.couch_connector.config.db_name = "asdproject";
-//Backbone.couch_connector.config.ddoc_name = "comics";
-//Backbone.couch_connector.config.global_changes = false;
+Backbone.couch_connector.config.db_name = "asdproject";
+Backbone.couch_connector.config.ddoc_name = "asd";
+Backbone.couch_connector.config.global_changes = false;
 
 //var db = Backbone.couch.db('asdproject');
 
@@ -74,8 +74,8 @@ var comix = {};
     //JSON - Rest call
     comix.Comics = Backbone.Collection.extend({
         model: comix.Comic,
-        _db: db,
-        url : '/comics',
+        url : 'comics',
+        dataType: 'json',
         comparator: function(comic){
             var date = new Date(comic.get('date'));
             return date.getTime();
