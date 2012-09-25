@@ -8,16 +8,11 @@ Backbone framework
 
 var comix = {};
 
-Backbone.couch_connector.config.db_name = "asdproject";
-Backbone.couch_connector.config.ddoc_name = "asd";
-Backbone.couch_connector.config.global_changes = false;
-
-//var db = Backbone.couch.db('asdproject');
-
 (function($){
+	
     comix.Comic = Backbone.Model.extend({
         defaults: {
-        	id: '',
+        	id:'',
             date: new Date(),
             publisher: '',
             title: '',
@@ -71,11 +66,11 @@ Backbone.couch_connector.config.global_changes = false;
         return formatedDate;
     };
     
-    //JSON - Rest call
     comix.Comics = Backbone.Collection.extend({
         model: comix.Comic,
-        url : 'comics',
-        dataType: 'json',
+        url: "_view/comics/",
+        dataType:"json",
+        idAttribute: '_id',
         comparator: function(comic){
             var date = new Date(comic.get('date'));
             return date.getTime();

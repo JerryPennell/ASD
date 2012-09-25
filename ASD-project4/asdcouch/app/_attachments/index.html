@@ -11,6 +11,7 @@
     <!--  Mobile viewport optimized: j.mp/bplateviewport -->
 	<meta name="HandheldFriendly" content="True">
 	<meta name="MobileOptimized" content="320"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
     <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
@@ -20,8 +21,6 @@
     <script src="underscore.js"></script>
     <script src="backbone.js"></script>
     <script src="formparams.js"></script>
-    <script src="backbone-couchdb.js"></script>
-    <script src="jquery.couch.js"></script>
     
 
     <!-- App specific scripts -->
@@ -89,8 +88,8 @@
         <a href="#comic-form" data-role="button" data-icon="add" id="add-button" class="ui-btn-right">Add</a>
       </div>
       <div data-role="content">
-      <ul id="comiclist" data-role="listview">
-         </ul>
+                   <ul id="comiclist" data-role="listview">
+                   </ul>
           <!-- the contents of the list view will be rendered via the backbone view -->
       </div>
     </div>
