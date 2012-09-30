@@ -67,10 +67,18 @@ var comix = {};
     };
     
     comix.Comics = Backbone.Collection.extend({
+	  db : {
+	      view : "comics",
+	      changes : true,
+	      // If you don't know what filters are in CouchDB, then read it up here:
+	      // <a href="http://guide.couchdb.org/draft/notifications.html#filters">http://guide.couchdb.org/draft/notifications.html#filters</a>
+	      // Look up how the filter works in `chat_example/filters/private_messages.js`.
+	      // IMPORTANT: see `filters/messages.js` to see how to retrieve remove events
+	      filter : Backbone.couch_connector.config.ddoc_name + "/comics"
+	    },
         model: comix.Comic,
         url: "_view/comics/",
         dataType:"json",
-        idAttribute: '_id',
         comparator: function(comic){
             var date = new Date(comic.get('date'));
             return date.getTime();
