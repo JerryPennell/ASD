@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>CRUD Example with Jquery</title>
+  	 <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+  	<script src="jquery.couch.js"></script>
+  	<script src="main.js"></script>
+  	 <meta charset="UTF-8">
+  </head>
+  <body>
+    <h3>My Comics - (click on comic name to edit)</h3>
+    <ul id="itemData" ></ul>
+
+    <h3>CRUD for Comics List</h3>
+    <form name="itemForm">
+            <input type="hidden" name="id" id="idId" />
+            <input type="hidden" name="rev" id="revId"/>
+            <label for="issue">Issue: </label>
+            <input type="text" name="issue" id="issueId" size = 3/>
+            <label for="name">Name: </label>
+            <input type="text" name="name" id="nameId" size=12 />
+            <br><br>
+            <input type="button" id="createId" value="create" />
+            <input type="button" id="updateId" value="update" />
+            <input type="button" id="deleteId" value="delete" />
+    </form>
+   
+    <h3>Replicate - Used this functionality to push from local to repository</h3>
+    <form>
+      <label for="sourceDBId">Source: </label>
+      <input id="sourceDBId" type="text"></input>
+      <br><br>
+      <label for="targetDBId">Target: </label>
+      <input id="targetDBId" type="text"></input>
+      <br><br>
+      <input id="replicateId" type="button" value="replicate"></input>
+   </form>
+   
+  </body>
+</html>
